@@ -1,4 +1,9 @@
 package com.example.demo.Enum;
 
-public class GuessStatus {
+public enum  GuessStatus {
+    GUESSED,
+    MISSED,
+    STARTED,
+    AGAIN
+
 }

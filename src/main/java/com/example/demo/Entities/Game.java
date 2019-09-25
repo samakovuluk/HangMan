@@ -1,58 +1,120 @@
 package com.example.demo.Entities;
 
 import com.example.demo.Enum.GameStatus;
+import com.example.demo.Enum.GuessStatus;
+import com.example.demo.Variables.Variable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import com.vladmihalcea.hibernate.type.array.StringArrayType;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
-@Entity(name = "Game")
+@Entity
 @Table(name = "Game")
+@TypeDef(
+    name = "string-array",
+    typeClass = StringArrayType.class
+)
 public class Game {
 
     @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Integer id;
 
-
-    private Player player;
+    @JsonIgnore
     @Column(name = "secretWord")
     private String secretWord;
+
     @Column(name = "visibleWord")
     private String visibleWord;
-    @Column(name = "attemptsLeft")
-    private Integer attemptsLeft;
-    @ElementCollection
-    @Column(name = "availableLetters")
-    private List<Character> availableLetters;
-    @Enumerated
+
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "gameStatus")
     private GameStatus gameStatus;
-    private LocalDateTime dateCreate;
-    private LocalDateTime dateUpdate;
 
-    private final Integer numberForAttempts= 7;
-    private final Character[] letters = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
-    private final String hideWordCharacter = "?";
+    @Column(name = "attemptsLeft")
+    private Integer attemptsLeft;
 
-    public Game(Player player, String secretWord) {
-        this.player = player;
+    @Type( type = "string-array")
+    @Column(name = "availableLetters", columnDefinition = "text[]")
+    private String[] availableLetters;
+
+    @Transient
+    private GuessStatus guessStatus;
+
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "createDate")
+    private Date createDate;
+
+    @UpdateTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "updateDate")
+    private Date updateDate;
+
+
+
+
+    public Game(){ }
+
+    public Game( String secretWord) {
         this.secretWord = secretWord;
-        this.visibleWord = hideWordCharacter.repeat(secretWord.length());
-        this.attemptsLeft = numberForAttempts;
-        this.availableLetters = Arrays.asList(letters);
+        this.visibleWord = Variable.hideWordCharacter.toString().repeat(secretWord.length());
         this.gameStatus = GameStatus.ACTIVE;
-        this.dateCreate = LocalDateTime.now();
-
+        this.attemptsLeft = Variable.numberForAttempts;
+        this.availableLetters = Variable.letters;
+        this.guessStatus = GuessStatus.STARTED;
     }
 
-    public Player getPlayer() {
-        return player;
+    public void guess(String letter){
+        if (secretWord.contains(letter) && letter.length()==1 && getAvailableLetters().contains(letter) ) {
+           addLetterToVisibleWord(letter);
+        }
+        else if (getAvailableLetters().contains(letter)){
+            removeLetterFromAvailableLetters(letter);
+            guessStatus=GuessStatus.MISSED;
+            attemptsLeft-=1;
+        }
+        else {
+            guessStatus=GuessStatus.AGAIN;
+        }
+        if (!visibleWord.contains(Variable.hideWordCharacter.toString())){
+            gameStatus=GameStatus.WON;
+        }
+        else if (attemptsLeft==0){
+            gameStatus=GameStatus.FAILED;
+        }
+    }
+    public void addLetterToVisibleWord(String letter){
+        StringBuilder word = new StringBuilder(visibleWord);
+        for (int i=0;i<word.length();i++) {
+            if (secretWord.charAt(i)==letter.charAt(0))
+                word.setCharAt(i,letter.charAt(0));
+        }
+        setVisibleWord(word.toString());
+        removeLetterFromAvailableLetters(letter);
+        guessStatus=GuessStatus.GUESSED;
+    }
+    public void removeLetterFromAvailableLetters(String letter){
+        List<String> arrayList = getAvailableLetters();
+
+        arrayList.remove(letter);
+
+        setAvailableLetters(arrayList);
+    }
+    public Integer getId() {
+        return id;
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getSecretWord() {
@@ -71,22 +133,6 @@ public class Game {
         this.visibleWord = visibleWord;
     }
 
-    public Integer getAttemptsLeft() {
-        return attemptsLeft;
-    }
-
-    public void setAttemptsLeft(Integer attemptsLeft) {
-        this.attemptsLeft = attemptsLeft;
-    }
-
-    public List<Character> getAvailableLetters() {
-        return availableLetters;
-    }
-
-    public void setAvailableLetters(List<Character> availableLetters) {
-        this.availableLetters = availableLetters;
-    }
-
     public GameStatus getGameStatus() {
         return gameStatus;
     }
@@ -95,27 +141,47 @@ public class Game {
         this.gameStatus = gameStatus;
     }
 
-    public LocalDateTime getDateCreate() {
-        return dateCreate;
+    public Integer getAttemptsLeft() {
+        return attemptsLeft;
     }
 
-    public void setDateCreate(LocalDateTime dateCreate) {
-        this.dateCreate = dateCreate;
+    public void setAttemptsLeft(Integer attemptsLeft) {
+        this.attemptsLeft = attemptsLeft;
     }
 
-    public LocalDateTime getDateUpdate() {
-        return dateUpdate;
+    public List<String> getAvailableLetters() {
+        return new LinkedList<String>(Arrays.asList(availableLetters));
     }
 
-    public void setDateUpdate(LocalDateTime dateUpdate) {
-        this.dateUpdate = dateUpdate;
+    public void setAvailableLetters(List<String> availableLetters) {
+        this.availableLetters = availableLetters.toArray(new String[availableLetters.size()]);
     }
 
-    public Integer getNumberForAttempts() {
-        return numberForAttempts;
+    public void setAvailableLetters(String[] availableLetters) {
+        this.availableLetters = availableLetters;
     }
 
-    public Character[] getLetters() {
-        return letters;
+    public GuessStatus getGuessStatus() {
+        return guessStatus;
+    }
+
+    public void setGuessStatus(GuessStatus guessStatus) {
+        this.guessStatus = guessStatus;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 }

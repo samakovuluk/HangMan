@@ -16,6 +16,7 @@ public class Player extends User {
     private Date update;
 
 
+
     public Player(String username, String password, UserType userType) {
         super(username, password, userType);
     }

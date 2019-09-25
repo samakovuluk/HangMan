@@ -19,18 +19,11 @@ import java.util.StringTokenizer;
 
 @Component
 public class WebSecurityConfig implements Filter {
-
-
-
     private final EntityManager entityManager;
-
     @Autowired
     public WebSecurityConfig(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
-
-
-
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;

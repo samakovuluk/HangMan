@@ -28,6 +28,8 @@ public class Game {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+
+
     @JsonIgnore
     @Column(name = "secretWord")
     private String secretWord;

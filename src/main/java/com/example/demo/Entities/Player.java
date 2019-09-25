@@ -5,7 +5,7 @@ import com.example.demo.Enum.UserType;
 import java.util.Date;
 import java.util.List;
 
-public class Player extends User {
+public class Player extends Users {
 
     private List<Game> games;
     private Game currentGame;
@@ -14,7 +14,6 @@ public class Player extends User {
     private Integer failedGames;
     private Date create;
     private Date update;
-
 
 
     public Player(String username, String password, UserType userType) {

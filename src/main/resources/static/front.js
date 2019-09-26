@@ -91,6 +91,9 @@ $(document).ready( function () {
         $('#logoutForm, #managerView, #userWelcome, #startGame, #gameView').hide();
 
     });
+
+
+
 });
 
 function loadCurrentGame() {
@@ -145,10 +148,31 @@ function updateManagementTable(){
                 {"data" : "user.username"},
                 {"data" : "wonGames"},
                 {"data" : "failedGames"},
-                {"data" : "lostGames"}
+                {"data" : "lostGames"},
+                {"defaultContent" : "<button class='ui-icon-folder-open' id='open'>Open</button><button class='delete' id='delete'>Delete</button>"}
+
 
 
             ]
+        });
+        $(document).on('click', '.delete', function () {
+            var row = $(this).parent().parent();
+            var data = table.row($(this).parents()).data();
+
+             $.ajax({
+                 url: '/api/users/'+data.userId,
+                 type: 'DELETE',
+                 timeout: 30000,
+                 success: function(res) {
+                    row.remove();
+                 },
+                 beforeSend: function (xhr) {
+                     xhr.setRequestHeader ("Authorization", "Basic " + btoa(currentUserName + ":" + currentUserPassword));
+                 }
+             });
+             console.log("success")
+
+
         });
     }
     alreadyLoadedTable = true;

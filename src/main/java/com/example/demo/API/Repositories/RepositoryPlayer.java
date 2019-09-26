@@ -11,5 +11,5 @@ import java.util.Optional;
 @Repository
 public interface RepositoryPlayer extends JpaRepository<Player, Integer> {
     Optional<Player> findPlayerByUserId(Integer id);
-    void deleteAllByUserId(Integer id);
+    void deleteByUserId(Integer id);
 }

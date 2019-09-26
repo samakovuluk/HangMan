@@ -36,9 +36,9 @@ public class DemoApplication {
 
 	@PostConstruct
 	public void after(){
-		serviceUser.save(new Users("user","$2a$07$7M0TDnhLLnEaKV5bNlfDLOkd2rcQN.whI22VMcUMm4UXAWAu7ii.u", UserType.PLAYER));
-		serviceUser.save(new Users("admin","$2a$07$7M0TDnhLLnEaKV5bNlfDLOkd2rcQN.whI22VMcUMm4UXAWAu7ii.u", UserType.MANAGER));
-		serviceUser.save(new Users("user2","$2a$07$7M0TDnhLLnEaKV5bNlfDLOkd2rcQN.whI22VMcUMm4UXAWAu7ii.u", UserType.PLAYER));
+		serviceUser.save(new Users("user","user", UserType.PLAYER));
+		serviceUser.save(new Users("admin","user", UserType.MANAGER));
+		serviceUser.save(new Users("user2","user", UserType.PLAYER));
 
 
 		serviceWord.save(new Words("JAVA"));

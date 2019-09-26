@@ -23,7 +23,8 @@ public class ControllerUser {
     }
 
     @PostMapping
-    public ResponseEntity create(Users user) {
+    public ResponseEntity create(@RequestBody Users user) {
+
         return ResponseEntity.ok(serviceUser.save(user));
     }
 

@@ -31,6 +31,7 @@ public class ServiceUser {
     }
 
     public Users save(Users stock) {
+        stock.encryptPassword();
         stock = userRepository.save(stock);
         servicePlayer.save(new Player(stock.getId()));
         return stock;

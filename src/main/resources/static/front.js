@@ -26,8 +26,12 @@ $(document).ready( function () {
                 $('#userWelcome, #logoutForm').show();
                 if(typeOfUser === 'MANAGER'){
                     $('#managerView').show();
+                    $('#wordView').show();
                     $('#addUser').show();
+                    $('#addWord').show();
+                    updateWordTable();
                     updateManagementTable();
+
                 }else if(typeOfUser === 'PLAYER'){
                     $('#managerView').hide();
                     $('#startGame').show();
@@ -90,27 +94,70 @@ $(document).ready( function () {
     });
     $('#addU').click(function(e){
         e.preventDefault();
+        var data="{ \"username\":\""+($('#usernameN').val())+
+             "\", \"password\": \""+($('#passwordN').val())+
+             "\", \"userType\": \"PLAYER\"}";
+
+
+        $('#addUser').hide();
+        $('#addUser').show();
+
+console.log(data);
+           $.ajax({
+               url: '/api/users/',
+               type: 'POST',
+               data: data,
+               dataType: 'json',
+               contentType: 'application/json',
+               timeout: 30000,
+               success: function(data) {
+
+
+                   updateManagementTable();
+               },
+               beforeSend: function (xhr) {
+                   xhr.setRequestHeader ("Authorization", "Basic " + btoa(currentUserName + ":" + currentUserPassword));
+               },
+               error: function (data) {
+                   alert("Error, cant add new user");
+
+
+               }
+           });
+
+
+
+    });
+
+    $('#addW').click(function(e){
+        e.preventDefault();
+        var data="{ \"word\":\""+($('#word').val())+"\"}";
+
+        console.log(data);
         $.ajax({
-            url: '/api/users/',
+            url: '/api/words/',
             type: 'POST',
+            data: data,
             dataType: 'json',
+            contentType: 'application/json',
             timeout: 30000,
             success: function(data) {
-                currentGame = data;
-                $('#gameView').show();
-                loadCurrentGame();
+                updateWordTable();
             },
             beforeSend: function (xhr) {
                 xhr.setRequestHeader ("Authorization", "Basic " + btoa(currentUserName + ":" + currentUserPassword));
             }
         });
+
+
+
     });
-
-
     $('#logout').click(function(e){
         e.preventDefault();
-
+        $('#wordView').hide();
+        $('#addWord').hide()
         $('#loginForm').show();
+        $('#addUser').hide();
         $('#logoutForm, #managerView,#openGames,#gamesView, #userWelcome, #startGame, #gameView').hide();
 
     });
@@ -160,6 +207,7 @@ function loadCurrentGame() {
         status = currentGame.gameStatus,
         secretWord = currentGame.secretWord;
     console.log(currentGame.availableLetters);
+    console.log(secretWord)
 
     $('#visibleWord').text(visibleWord);
     $('#status').text(status);
@@ -170,6 +218,9 @@ function loadCurrentGame() {
     if(status === 'ACTIVE') {
         printOutAvailableCharacters(availableCharacters);
     }else{
+        $('#secretWord').show();
+        $('#secretWord').text("The secret word was " + secretWord);
+
         $('#openGames').show();
         $('#availableCharacters').addClass('alert alert-warning');
         $('#availableCharacters').text("You cannot keep playing. Please, click on Start/Continue Game.");
@@ -189,7 +240,8 @@ function printOutAvailableCharacters(availableCharacters) {
 }
 
 function updateManagementTable(){
-    if(alreadyLoadedTable === false) {
+
+        $("#playersTable").dataTable().fnDestroy();
         var table =$('#playersTable').DataTable({
             'ajax': {
                 "type"   : "GET",
@@ -231,6 +283,51 @@ function updateManagementTable(){
 
 
         });
-    }
-    alreadyLoadedTable = true;
+
+
+}
+
+
+function updateWordTable(){
+
+    $("#wordsTable").dataTable().fnDestroy();
+    var table =$('#wordsTable').DataTable({
+        'ajax': {
+            "type"   : "GET",
+            "url"    : '/api/words',
+            "dataSrc": "",
+            "beforeSend": function (xhr) {
+                xhr.setRequestHeader ("Authorization", "Basic " + btoa(currentUserName + ":" + currentUserPassword));
+            }
+        },
+        "columns": [
+            {"data": "id"},
+            {"data" : "word"},
+            {"defaultContent" : "<button class='delete' id='deleteW'>Delete</button>"}
+
+
+
+        ]
+    });
+    $(document).on('click', '.deleteW', function () {
+        var row = $(this).parent().parent();
+        var data = table.row($(this).parents()).data();
+
+        $.ajax({
+            url: '/api/words/'+data.id,
+            type: 'DELETE',
+            timeout: 30000,
+            success: function(res) {
+                row.remove();
+            },
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader ("Authorization", "Basic " + btoa(currentUserName + ":" + currentUserPassword));
+            }
+        });
+        console.log("success")
+
+
+    });
+
+
 }

@@ -1,6 +1,6 @@
 
 # Game HangMan
-It is the implementation of popular game HangMan, you can read more about the game and rule [here]  (https://en.wikipedia.org/wiki/Hangman_(game%29).
+It is the implementation of popular game HangMan, you can read more about the game and rule [here](https://en.wikipedia.org/wiki/Hangman_(game).
 ## Description
 In this project you can play game hangman. For start game you need run project and authorize with default user(login:user,password:user). And after 
 will appear buttons. One of this button is "Start game" to play, click this button. Game started, and it gives for you seven chance to guess word by selecting available letter on below.

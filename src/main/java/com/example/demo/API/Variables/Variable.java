@@ -1,4 +1,4 @@
-package com.example.demo.Variables;
+package com.example.demo.API.Variables;
 
 public class Variable {
     public final static String[] letters = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};

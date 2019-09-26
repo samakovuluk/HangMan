@@ -1,4 +1,4 @@
-package com.example.demo.Enum;
+package com.example.demo.API.Enum;
 
 public enum UserType {
     MANAGER,

@@ -1,10 +1,9 @@
-package com.example.demo.Repositories;
+package com.example.demo.API.Repositories;
 
-import com.example.demo.Entities.Game;
-import com.example.demo.Entities.Player;
-import com.example.demo.Entities.Users;
+import com.example.demo.API.Entities.Game;
+import com.example.demo.API.Entities.Player;
+import com.example.demo.API.Entities.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;

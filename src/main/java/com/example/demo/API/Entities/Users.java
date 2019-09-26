@@ -1,20 +1,20 @@
-package com.example.demo.Entities;
+package com.example.demo.API.Entities;
 
-import com.example.demo.Enum.UserType;
+import com.example.demo.API.Enum.UserType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 import javax.persistence.*;
-import java.util.Collection;
 
 @Entity
 @Table(name = "Users")
 public class Users  {
 
     @Id
-    @Column(name = "id")
+    @GeneratedValue
+    @Column(name = "id", unique = true)
     private Integer id;
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     private String username;
     @JsonIgnore
     @Column(name = "password")

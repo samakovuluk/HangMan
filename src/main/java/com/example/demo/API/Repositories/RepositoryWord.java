@@ -1,8 +1,7 @@
-package com.example.demo.Repositories;
+package com.example.demo.API.Repositories;
 
-import com.example.demo.Entities.Player;
-import com.example.demo.Entities.Words;
-import org.graalvm.compiler.word.Word;
+import com.example.demo.API.Entities.Player;
+import com.example.demo.API.Entities.Words;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

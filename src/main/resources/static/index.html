@@ -8,13 +8,13 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
     <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-    <script src="js.js"></script>
+    <script src="front.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
 <div class="container">
     <div class="row">
-        <h2>Hangman by JesusGSDev</h2>
+        <h2>Samakovs</h2>
 
         <div id="userWelcome">
             <h3></h3>
@@ -27,6 +27,10 @@
                 <input class="form-control" type="text" name="username" id="username">
             </div>
             <div class="form-group">
+                <label>Password :</label>
+                <input class="form-control" type="password" name="password" id="password">
+            </div>
+            <div class="form-group">
                 <button class="btn btn-primary" name="login" id="login">Login</button>
             </div>
         </div>
@@ -36,6 +40,9 @@
 
         <div class="form-group" id="startGame">
             <button class="btn btn-success" name="start" id="start">Start/Continue Game</button>
+        </div>
+        <div class="form-group" id="openGames">
+            <button class="btn btn-success" name="games" id="games">Open Games</button>
         </div>
 
         <div id="gameView">
@@ -50,27 +57,23 @@
 
         <div id="managerView">
             <h1>Current Status</h1>
-            <table id="employeesTable" class="display">
+            <table id="playersTable" class="display">
                 <thead>
                 <tr>
+                    <th>Id</th>
                     <th>Username</th>
-                    <th>Secret Word</th>
-                    <th>Visible Word</th>
-                    <th>Attempts left</th>
-                    <th>Game Status</th>
-                    <th>Game Started on</th>
-                    <th>Game Ended on</th>
+                    <th>Won Games</th>
+                    <th>Failed Games</th>
+                    <th>Lost Games</th>
                 </tr>
                 </thead>
                 <tfoot>
                 <tr>
+                    <th>Id</th>
                     <th>Username</th>
-                    <th>Secret Word</th>
-                    <th>Visible Word</th>
-                    <th>Attempts left</th>
-                    <th>Game Status</th>
-                    <th>Game Started on</th>
-                    <th>Game Ended on</th>
+                    <th>Won Games</th>
+                    <th>Failed Games</th>
+                    <th>Lost Games</th>
                 </tr>
                 </tfoot>
             </table>

@@ -1,8 +1,8 @@
-package com.example.demo.Services;
+package com.example.demo.API.Services;
 
-import com.example.demo.Entities.Game;
-import com.example.demo.Enum.GameStatus;
-import com.example.demo.Repositories.RepositoryGame;
+import com.example.demo.API.Entities.Game;
+import com.example.demo.API.Enum.GameStatus;
+import com.example.demo.API.Repositories.RepositoryGame;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,11 +23,12 @@ public class ServiceGame {
     }
 
     public void refresh(Integer id ){
-        List<Game> games = repositoryGame.findGamesByPlayerIdAndAndGameStatus(id ,GameStatus.ACTIVE);
-        for (Game game:games) {
-            game.setGameStatus(GameStatus.LOST);
+        if (id!=null) {
+            List<Game> games = repositoryGame.findGamesByPlayerIdAndAndGameStatus(id, GameStatus.ACTIVE);
+            for (Game game : games) {
+                game.setGameStatus(GameStatus.LOST);
+            }
         }
-
     }
     public Game save(Game stock) {
         return repositoryGame.save(stock);
@@ -38,6 +39,7 @@ public class ServiceGame {
         return repositoryGame.save(real);
     }
     public Game check(Integer id, String letter){
+        letter=letter.charAt(0)+"";
         Game real = repositoryGame.findById(id).get();
         if (real.getGameStatus()== GameStatus.ACTIVE)
         real.guess(letter);

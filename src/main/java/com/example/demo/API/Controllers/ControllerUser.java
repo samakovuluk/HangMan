@@ -1,17 +1,16 @@
-package com.example.demo.Controllers;
+package com.example.demo.API.Controllers;
 
-import com.example.demo.Entities.Users;
-import com.example.demo.Services.ServiceUser;
+import com.example.demo.API.Entities.Users;
+import com.example.demo.API.Services.ServiceUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class ControllerUser {
 
     @Autowired

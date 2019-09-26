@@ -1,9 +1,9 @@
-package com.example.demo.Services;
+package com.example.demo.API.Services;
 
-import com.example.demo.Entities.Users;
-import com.example.demo.Entities.Words;
-import com.example.demo.Repositories.RepositoryWord;
-import com.example.demo.Repositories.UserRepository;
+import com.example.demo.API.Entities.Users;
+import com.example.demo.API.Entities.Words;
+import com.example.demo.API.Repositories.RepositoryWord;
+import com.example.demo.API.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

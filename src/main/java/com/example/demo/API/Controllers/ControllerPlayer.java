@@ -1,8 +1,8 @@
-package com.example.demo.Controllers;
+package com.example.demo.API.Controllers;
 
-import com.example.demo.Entities.Game;
-import com.example.demo.Entities.Player;
-import com.example.demo.Services.ServicePlayer;
+import com.example.demo.API.Entities.Game;
+import com.example.demo.API.Entities.Player;
+import com.example.demo.API.Services.ServicePlayer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/player")
+@RequestMapping("/api/player")
 public class ControllerPlayer {
     @Autowired
     private ServicePlayer servicePlayer;

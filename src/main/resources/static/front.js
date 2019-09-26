@@ -1,21 +1,23 @@
-/**
- * Created by jesgarsal on 23/04/17.
- */
 $(document).ready( function () {
 
     alreadyLoadedTable = false;
     currentUserName = 'none';
+    currentUserPassword= 'none';
     currentGame = '';
+    currentGameId = 0;
 
     $('#login').click(function(e){
         e.preventDefault();
 
         currentUserName = $('#username').val();
+        currentUserPassword = $('#password').val();
+
         $.ajax({
-            url: '/login/' + currentUserName,
+            url: '/api/login/',
             type: 'GET',
             dataType: 'text',
             timeout: 30000,
+
             success: function(data) {
                 var typeOfUser = data;
                 var userWelcome = 'Welcome ' + currentUserName
@@ -28,32 +30,46 @@ $(document).ready( function () {
                 }else if(typeOfUser === 'PLAYER'){
                     $('#managerView').hide();
                     $('#startGame').show();
+
+
                 }
+            },
+            error : function(xhr, ajaxOptions, thrownError) {
+
+                alert('Invalid username or password. Please try again. thrownError:' + thrownError + 'xhr:' + xhr + 'ajaxOptions:'+ajaxOptions);
+
+            },
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader ("Authorization", "Basic " + btoa(currentUserName + ":" + currentUserPassword));
             }
         });
     });
 
     $(document).on('click', '.characterToPlay', function () {
         var characterChosen = $(this).val();
+        console.log(characterChosen.toString());
         console.log(characterChosen);
         $.ajax({
-            url: '/game/update/' + currentUserName + '/' + characterChosen,
-            type: 'GET',
-            dataType: 'json',
+            url: '/api/game/' + currentGameId + '/',
+            type: 'POST',
+            data:  characterChosen.toString(),
             timeout: 30000,
             success: function(data) {
                 currentGame = data;
                 loadCurrentGame();
+            },
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader ("Authorization", "Basic " + btoa(currentUserName + ":" + currentUserPassword));
             }
         });
     });
 
     $('#startGame').click(function(e){
         e.preventDefault();
-
+        $('#openGames').hide();
         $('#secretWord').hide();
         $.ajax({
-            url: '/game/' + currentUserName,
+            url: '/api/game/start',
             type: 'GET',
             dataType: 'json',
             timeout: 30000,
@@ -61,6 +77,9 @@ $(document).ready( function () {
                 currentGame = data;
                 $('#gameView').show();
                 loadCurrentGame();
+            },
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader ("Authorization", "Basic " + btoa(currentUserName + ":" + currentUserPassword));
             }
         });
     });
@@ -75,12 +94,13 @@ $(document).ready( function () {
 });
 
 function loadCurrentGame() {
+    currentGameId = currentGame.id;
     var visibleWord = currentGame.visibleWord,
         attemptsLeft = currentGame.attemptsLeft,
-        availableCharacters = currentGame.availableCharacters,
-        status = currentGame.status,
+        availableCharacters = currentGame.availableLetters,
+        status = currentGame.gameStatus,
         secretWord = currentGame.secretWord;
-
+    console.log(currentGame.availableLetters);
 
     $('#visibleWord').text(visibleWord);
     $('#status').text(status);
@@ -91,6 +111,7 @@ function loadCurrentGame() {
     if(status === 'ACTIVE') {
         printOutAvailableCharacters(availableCharacters);
     }else{
+        $('#openGames').show();
         $('#availableCharacters').addClass('alert alert-warning');
         $('#availableCharacters').text("You cannot keep playing. Please, click on Start/Continue Game.");
         if(status === 'LOST') {
@@ -110,18 +131,23 @@ function printOutAvailableCharacters(availableCharacters) {
 
 function updateManagementTable(){
     if(alreadyLoadedTable === false) {
-        var table = $('#employeesTable').DataTable({
-            "sAjaxSource": "/management/",
-            "sAjaxDataProp": "",
-            "order": [[0, "asc"]],
-            "aoColumns": [
-                {"mData": "username"},
-                {"mData": "secretWord"},
-                {"mData": "visibleWord"},
-                {"mData": "attemptsLeft"},
-                {"mData": "status"},
-                {"mData": "startDate"},
-                {"mData": "endDate"}
+        var table =$('#playersTable').DataTable({
+            'ajax': {
+                "type"   : "GET",
+                "url"    : '/api/player',
+                "dataSrc": "",
+                "beforeSend": function (xhr) {
+                    xhr.setRequestHeader ("Authorization", "Basic " + btoa(currentUserName + ":" + currentUserPassword));
+                }
+            },
+            "columns": [
+                {"data": "id"},
+                {"data" : "user.username"},
+                {"data" : "wonGames"},
+                {"data" : "failedGames"},
+                {"data" : "lostGames"}
+
+
             ]
         });
     }

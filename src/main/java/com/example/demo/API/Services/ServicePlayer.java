@@ -1,11 +1,11 @@
-package com.example.demo.Services;
+package com.example.demo.API.Services;
 
 
-import com.example.demo.Entities.Game;
-import com.example.demo.Entities.Player;
-import com.example.demo.Enum.GameStatus;
-import com.example.demo.Repositories.RepositoryGame;
-import com.example.demo.Repositories.RepositoryPlayer;
+import com.example.demo.API.Entities.Game;
+import com.example.demo.API.Entities.Player;
+import com.example.demo.API.Enum.GameStatus;
+import com.example.demo.API.Repositories.RepositoryGame;
+import com.example.demo.API.Repositories.RepositoryPlayer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

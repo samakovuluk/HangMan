@@ -1,10 +1,9 @@
-package com.example.demo.Entities;
+package com.example.demo.API.Entities;
 
-import com.example.demo.Enum.UserType;
+import com.example.demo.API.Enum.UserType;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.List;
 @Entity
 @Table(name = "players")
@@ -15,11 +14,15 @@ public class Player {
     @Column(name = "id")
     private Integer id;
 
+
     @Column(name = "userId")
     private Integer userId;
 
     @OneToMany(mappedBy = "playerId")
     private List<Game> games;
+    @OneToOne
+    @JoinColumn(name = "userId", insertable = false, updatable = false)
+    private Users user;
 
 
 
@@ -88,5 +91,13 @@ public class Player {
 
     public void setFailedGames(Integer failedGames) {
         this.failedGames = failedGames;
+    }
+
+    public Users getUser() {
+        return user;
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
     }
 }

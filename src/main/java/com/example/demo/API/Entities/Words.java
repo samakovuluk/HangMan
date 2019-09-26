@@ -1,6 +1,4 @@
-package com.example.demo.Entities;
-
-import org.graalvm.compiler.word.Word;
+package com.example.demo.API.Entities;
 
 import javax.persistence.*;
 

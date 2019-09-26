@@ -1,13 +1,12 @@
-package com.example.demo.Controllers;
+package com.example.demo.API.Controllers;
 
-import com.example.demo.Entities.Game;
-import com.example.demo.Entities.Player;
-import com.example.demo.Entities.Words;
-import com.example.demo.Services.ServiceGame;
-import com.example.demo.Services.ServicePlayer;
-import com.example.demo.Services.ServiceWord;
+import com.example.demo.API.Entities.Game;
+import com.example.demo.API.Entities.Player;
+import com.example.demo.API.Entities.Words;
+import com.example.demo.API.Services.ServiceGame;
+import com.example.demo.API.Services.ServicePlayer;
+import com.example.demo.API.Services.ServiceWord;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
@@ -18,14 +17,13 @@ import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
-import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.StringTokenizer;
 
 @RestController
-@RequestMapping("/game")
+@RequestMapping("/api/game")
 public class ControllerGame {
     @Autowired
     private ServiceGame serviceGame;
@@ -58,6 +56,7 @@ public class ControllerGame {
         Query query = entityManager.createNativeQuery("SELECT id FROM users WHERE username = :username");
         query.setParameter("username", username);
         List<Object> rows =query.getResultList();
+        int i=(Integer.parseInt(rows.get(0).toString()));
         Optional<Player> player = servicePlayer.findByUserId(Integer.parseInt(rows.get(0).toString()));
         serviceGame.refresh(player.get().getId());
         List<Words> words = serviceWord.findAll();

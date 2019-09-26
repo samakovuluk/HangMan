@@ -1,19 +1,18 @@
-package com.example.demo.Controllers;
+package com.example.demo.API.Controllers;
 
-import com.example.demo.Entities.Words;
-import com.example.demo.Services.ServiceGame;
-import com.example.demo.Services.ServiceWord;
+import com.example.demo.API.Entities.Words;
+import com.example.demo.API.Services.ServiceGame;
+import com.example.demo.API.Services.ServiceWord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.security.Provider;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/words")
+@RequestMapping("/api/words")
 public class ControllerWord {
     @Autowired
     ServiceWord serviceWord;

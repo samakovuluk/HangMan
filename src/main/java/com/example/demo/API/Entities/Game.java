@@ -1,8 +1,8 @@
-package com.example.demo.Entities;
+package com.example.demo.API.Entities;
 
-import com.example.demo.Enum.GameStatus;
-import com.example.demo.Enum.GuessStatus;
-import com.example.demo.Variables.Variable;
+import com.example.demo.API.Enum.GameStatus;
+import com.example.demo.API.Enum.GuessStatus;
+import com.example.demo.API.Variables.Variable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import com.vladmihalcea.hibernate.type.array.StringArrayType;
@@ -26,7 +26,7 @@ public class Game {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     private Integer id;
 
     @JsonIgnore

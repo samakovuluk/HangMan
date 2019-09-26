@@ -1,16 +1,78 @@
 $(document).ready( function () {
 
+
     alreadyLoadedTable = false;
     currentUserName = 'none';
     currentUserPassword= 'none';
     currentGame = '';
     currentGameId = 0;
+    function getAuthCookie() {
+        var cn = "Authorization=";
+        var idx = document.cookie.indexOf(cn)
+
+        if (idx != -1) {
+            var end = document.cookie.indexOf(";", idx + 1);
+            if (end == -1) end = document.cookie.length;
+            return unescape(document.cookie.substring(idx + cn.length, end));
+        } else {
+            return "";
+        }
+    }
+    if (getAuthCookie()!="")
+    $.ajax({
+        url: '/api/login/',
+        type: 'GET',
+        dataType: 'text',
+        timeout: 30000,
+
+        success: function(data) {
+            var typeOfUser = data;
+            var userWelcome = 'Welcome ' + currentUserName
+            $('#loginForm').hide();
+            $('#userWelcome h3').text(userWelcome);
+            $('#userWelcome, #logoutForm').show();
+
+
+            if(typeOfUser === 'MANAGER'){
+                $('#managerView').show();
+                $('#wordView').show();
+                $('#addUser').show();
+                $('#addWord').show();
+                updateWordTable();
+                updateManagementTable();
+
+            }else if(typeOfUser === 'PLAYER'){
+                $('#managerView').hide();
+                $('#startGame').show();
+                $('#openGames').show();
+
+
+
+
+            }
+        },
+        error : function(xhr, ajaxOptions, thrownError) {
+
+            alert('Invalid username or password. Please try again. thrownError:' + thrownError + 'xhr:' + xhr + 'ajaxOptions:'+ajaxOptions);
+
+        },
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader ("Authorization", getAuthCookie());
+        }
+    });
+    else
+        $('#loginForm').show();
+
+
 
     $('#login').click(function(e){
         e.preventDefault();
 
         currentUserName = $('#username').val();
         currentUserPassword = $('#password').val();
+        var header = "Basic " + btoa(currentUserName + ":" + currentUserPassword);
+
+        document.cookie = "Authorization=" + header;
 
         $.ajax({
             url: '/api/login/',
@@ -24,6 +86,8 @@ $(document).ready( function () {
                 $('#loginForm').hide();
                 $('#userWelcome h3').text(userWelcome);
                 $('#userWelcome, #logoutForm').show();
+
+
                 if(typeOfUser === 'MANAGER'){
                     $('#managerView').show();
                     $('#wordView').show();
@@ -48,7 +112,7 @@ $(document).ready( function () {
 
             },
             beforeSend: function (xhr) {
-                xhr.setRequestHeader ("Authorization", "Basic " + btoa(currentUserName + ":" + currentUserPassword));
+                xhr.setRequestHeader ("Authorization", header);
             }
         });
     });
@@ -67,7 +131,7 @@ $(document).ready( function () {
                 loadCurrentGame();
             },
             beforeSend: function (xhr) {
-                xhr.setRequestHeader ("Authorization", "Basic " + btoa(currentUserName + ":" + currentUserPassword));
+                xhr.setRequestHeader ("Authorization", getAuthCookie());
             }
         });
     });
@@ -88,7 +152,7 @@ $(document).ready( function () {
                 loadCurrentGame();
             },
             beforeSend: function (xhr) {
-                xhr.setRequestHeader ("Authorization", "Basic " + btoa(currentUserName + ":" + currentUserPassword));
+                xhr.setRequestHeader ("Authorization", getAuthCookie());
             }
         });
     });
@@ -116,7 +180,7 @@ console.log(data);
                    updateManagementTable();
                },
                beforeSend: function (xhr) {
-                   xhr.setRequestHeader ("Authorization", "Basic " + btoa(currentUserName + ":" + currentUserPassword));
+                   xhr.setRequestHeader ("Authorization", getAuthCookie());
                },
                error: function (data) {
                    alert("Error, cant add new user");
@@ -145,7 +209,7 @@ console.log(data);
                 updateWordTable();
             },
             beforeSend: function (xhr) {
-                xhr.setRequestHeader ("Authorization", "Basic " + btoa(currentUserName + ":" + currentUserPassword));
+                xhr.setRequestHeader ("Authorization", getAuthCookie());
             }
         });
 
@@ -154,6 +218,7 @@ console.log(data);
     });
     $('#logout').click(function(e){
         e.preventDefault();
+        document.cookie = "Authorization=" +"";
         $('#wordView').hide();
         $('#addWord').hide()
         $('#loginForm').show();
@@ -174,7 +239,7 @@ console.log(data);
                 "url"    : '/api/game',
                 "dataSrc": "",
                 "beforeSend": function (xhr) {
-                    xhr.setRequestHeader ("Authorization", "Basic " + btoa(currentUserName + ":" + currentUserPassword));
+                    xhr.setRequestHeader ("Authorization", getAuthCookie());
                 }
             },
             "columns": [
@@ -238,7 +303,18 @@ function printOutAvailableCharacters(availableCharacters) {
         $('#availableCharacters').append(button);
     });
 }
+function getAuthCookie() {
+    var cn = "Authorization=";
+    var idx = document.cookie.indexOf(cn)
 
+    if (idx != -1) {
+        var end = document.cookie.indexOf(";", idx + 1);
+        if (end == -1) end = document.cookie.length;
+        return unescape(document.cookie.substring(idx + cn.length, end));
+    } else {
+        return "";
+    }
+}
 function updateManagementTable(){
 
         $("#playersTable").dataTable().fnDestroy();
@@ -248,7 +324,7 @@ function updateManagementTable(){
                 "url"    : '/api/player',
                 "dataSrc": "",
                 "beforeSend": function (xhr) {
-                    xhr.setRequestHeader ("Authorization", "Basic " + btoa(currentUserName + ":" + currentUserPassword));
+                    xhr.setRequestHeader ("Authorization", getAuthCookie());
                 }
             },
             "columns": [
@@ -276,7 +352,7 @@ function updateManagementTable(){
 
                  },
                  beforeSend: function (xhr) {
-                     xhr.setRequestHeader ("Authorization", "Basic " + btoa(currentUserName + ":" + currentUserPassword));
+                     xhr.setRequestHeader ("Authorization", getAuthCookie());
                  }
              });
              console.log("success")
@@ -297,7 +373,7 @@ function updateWordTable(){
             "url"    : '/api/words',
             "dataSrc": "",
             "beforeSend": function (xhr) {
-                xhr.setRequestHeader ("Authorization", "Basic " + btoa(currentUserName + ":" + currentUserPassword));
+                xhr.setRequestHeader ("Authorization", getAuthCookie());
             }
         },
         "columns": [
@@ -321,13 +397,15 @@ function updateWordTable(){
                 row.remove();
             },
             beforeSend: function (xhr) {
-                xhr.setRequestHeader ("Authorization", "Basic " + btoa(currentUserName + ":" + currentUserPassword));
+                xhr.setRequestHeader ("Authorization", getAuthCookie());
             }
         });
         console.log("success")
 
 
     });
+
+
 
 
 }

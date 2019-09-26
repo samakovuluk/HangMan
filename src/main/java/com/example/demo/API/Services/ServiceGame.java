@@ -18,6 +18,10 @@ public class ServiceGame {
         return repositoryGame.findAll();
     }
 
+    public List<Game> findAllByPlayerId(Integer id) {
+        return repositoryGame.findAllByPlayerId(id);
+    }
+
     public Optional<Game> findById(Integer id) {
         return repositoryGame.findById(id);
     }

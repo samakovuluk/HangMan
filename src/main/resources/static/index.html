@@ -80,6 +80,57 @@
                 </tfoot>
             </table>
             </div>
+        <div id="gamesView">
+            <h1>Current game</h1>
+            <table id="gamesTable" class="display">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>SecretWord</th>
+                    <th>VisibleWord</th>
+                    <th>Game Status</th>
+                    <th>Attempts Left</th>
+                    <th>Start Game Date</th>
+                    <th>End Game Date</th>
+
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <th>Id</th>
+                    <th>SecretWord</th>
+                    <th>VisibleWord</th>
+                    <th>Game Status</th>
+                    <th>Attempts Left</th>
+                    <th>Start Game Date</th>
+                    <th>End Game Date</th>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div id="addUser">
+            <h3>Add User</h3>
+            <div class="form-group">
+                <label>Username :</label>
+                <input class="form-control" type="text" name="username" id="usernameN">
+            </div>
+            <div class="form-group">
+                <label>Password :</label>
+                <input class="form-control" type="password" name="password" id="passwordN">
+            </div>
+            <div class="form-group">
+                <label>Role </label>
+                <tr><input type="radio" id="radioManager">Manager</input>
+                </tr>
+                <tr>
+                <input  type="radio"  id="radioPlayer">Player</input>
+                </tr>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary" name="add" id="addU">Add</button>
+            </div>
+        </div>
+
         </div>
     </div>
 </body>

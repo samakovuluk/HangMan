@@ -2,9 +2,12 @@ package com.example.demo.API.Controllers;
 
 import com.example.demo.API.Entities.Game;
 import com.example.demo.API.Entities.Player;
+import com.example.demo.API.Entities.Users;
 import com.example.demo.API.Entities.Words;
+import com.example.demo.API.Enum.UserType;
 import com.example.demo.API.Services.ServiceGame;
 import com.example.demo.API.Services.ServicePlayer;
+import com.example.demo.API.Services.ServiceUser;
 import com.example.demo.API.Services.ServiceWord;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +20,7 @@ import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.StringTokenizer;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/game")
@@ -37,9 +37,21 @@ public class ControllerGame {
     @Autowired
     private ServiceWord serviceWord;
 
+    @Autowired
+    private ServiceUser serviceUser;
+
     @GetMapping
-    public ResponseEntity<List<Game>> findAll(){
-        return ResponseEntity.ok(serviceGame.findAll());
+    public ResponseEntity<List<Game>> findAll(HttpServletRequest req){
+        String username =  getUserName(req.getHeader("Authorization"));
+        Query query = entityManager.createNativeQuery("SELECT id FROM users WHERE username = :username");
+        query.setParameter("username", username);
+        List<Object> rows =query.getResultList();
+        Optional<Users> users = serviceUser.findById(Integer.parseInt(rows.get(0).toString()));
+        if (users.get().getUserType()== UserType.MANAGER)
+            return ResponseEntity.ok(serviceGame.findAll());
+        else {
+            return ResponseEntity.ok(serviceGame.findAllByPlayerId(servicePlayer.findByUserId(users.get().getId()).get().getId()));
+        }
     }
     @GetMapping("/{id}")
     public ResponseEntity<Game> findById(@PathVariable Integer id) {

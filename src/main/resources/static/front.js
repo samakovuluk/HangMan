@@ -26,10 +26,14 @@ $(document).ready( function () {
                 $('#userWelcome, #logoutForm').show();
                 if(typeOfUser === 'MANAGER'){
                     $('#managerView').show();
+                    $('#addUser').show();
                     updateManagementTable();
                 }else if(typeOfUser === 'PLAYER'){
                     $('#managerView').hide();
                     $('#startGame').show();
+                    $('#openGames').show();
+
+
 
 
                 }
@@ -68,6 +72,7 @@ $(document).ready( function () {
         e.preventDefault();
         $('#openGames').hide();
         $('#secretWord').hide();
+        $('#gamesView').hide();
         $.ajax({
             url: '/api/game/start',
             type: 'GET',
@@ -83,12 +88,63 @@ $(document).ready( function () {
             }
         });
     });
+    $('#addU').click(function(e){
+        e.preventDefault();
+        $.ajax({
+            url: '/api/users/',
+            type: 'POST',
+            dataType: 'json',
+            timeout: 30000,
+            success: function(data) {
+                currentGame = data;
+                $('#gameView').show();
+                loadCurrentGame();
+            },
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader ("Authorization", "Basic " + btoa(currentUserName + ":" + currentUserPassword));
+            }
+        });
+    });
+
 
     $('#logout').click(function(e){
         e.preventDefault();
 
         $('#loginForm').show();
-        $('#logoutForm, #managerView, #userWelcome, #startGame, #gameView').hide();
+        $('#logoutForm, #managerView,#openGames,#gamesView, #userWelcome, #startGame, #gameView').hide();
+
+    });
+    $('#openGames').click(function(e){
+        e.preventDefault();
+
+
+        $('#gameView').hide();
+        $('#gamesView').show();
+        $("#gamesTable").dataTable().fnDestroy();
+        var table =$('#gamesTable').DataTable({
+            'ajax': {
+                "type"   : "GET",
+                "url"    : '/api/game',
+                "dataSrc": "",
+                "beforeSend": function (xhr) {
+                    xhr.setRequestHeader ("Authorization", "Basic " + btoa(currentUserName + ":" + currentUserPassword));
+                }
+            },
+            "columns": [
+                {"data":  "id"},
+                {"data": "secretWord"},
+                {"data": "visibleWord"},
+                {"data": "gameStatus"},
+                {"data": "attemptsLeft"},
+                {"data": "createDate"},
+                {"data": "updateDate"}
+
+
+
+            ]
+        });
+
+
 
     });
 
@@ -149,7 +205,7 @@ function updateManagementTable(){
                 {"data" : "wonGames"},
                 {"data" : "failedGames"},
                 {"data" : "lostGames"},
-                {"defaultContent" : "<button class='ui-icon-folder-open' id='open'>Open</button><button class='delete' id='delete'>Delete</button>"}
+                {"defaultContent" : "<button class='delete' id='delete'>Delete</button>"}
 
 
 
@@ -165,6 +221,7 @@ function updateManagementTable(){
                  timeout: 30000,
                  success: function(res) {
                     row.remove();
+
                  },
                  beforeSend: function (xhr) {
                      xhr.setRequestHeader ("Authorization", "Basic " + btoa(currentUserName + ":" + currentUserPassword));

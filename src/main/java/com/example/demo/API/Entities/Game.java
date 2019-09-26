@@ -29,11 +29,11 @@ public class Game {
     @Column(name = "id", nullable = false, unique = true)
     private Integer id;
 
-    @JsonIgnore
+
     @Column(name = "playerId")
     private Integer playerId;
 
-    @JsonIgnore
+
     @Column(name = "secretWord")
     private String secretWord;
 
@@ -126,7 +126,9 @@ public class Game {
     }
 
     public String getSecretWord() {
+        if (gameStatus!=GameStatus.ACTIVE)
         return secretWord;
+        else return "*hided*";
     }
 
     public void setSecretWord(String secretWord) {

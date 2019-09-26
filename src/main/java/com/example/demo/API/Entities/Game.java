@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vladmihalcea.hibernate.type.array.StringArrayType;
 import org.hibernate.annotations.*;
 
+
 import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -28,7 +29,9 @@ public class Game {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-
+    @JsonIgnore
+    @Column(name = "playerId")
+    private Integer playerId;
 
     @JsonIgnore
     @Column(name = "secretWord")
@@ -66,13 +69,16 @@ public class Game {
 
     public Game(){ }
 
-    public Game( String secretWord) {
+    public Game(String secretWord , Integer playerId) {
+
+
         this.secretWord = secretWord;
         this.visibleWord = Variable.hideWordCharacter.toString().repeat(secretWord.length());
         this.gameStatus = GameStatus.ACTIVE;
         this.attemptsLeft = Variable.numberForAttempts;
         this.availableLetters = Variable.letters;
         this.guessStatus = GuessStatus.STARTED;
+        this.playerId = playerId;
     }
 
     public void guess(String letter){
@@ -185,5 +191,13 @@ public class Game {
 
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
+    }
+
+    public Integer getPlayerId() {
+        return playerId;
+    }
+
+    public void setPlayerId(Integer playerId) {
+        this.playerId = playerId;
     }
 }

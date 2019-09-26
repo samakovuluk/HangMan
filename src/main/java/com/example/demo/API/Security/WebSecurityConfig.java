@@ -31,6 +31,8 @@ public class WebSecurityConfig implements Filter {
 
         Query query = entityManager.createNativeQuery("SELECT username,password FROM users WHERE username = :username");
 
+
+
         String authHeader = request.getHeader("Authorization");
         if (authHeader != null) {
             StringTokenizer st = new StringTokenizer(authHeader);
@@ -46,7 +48,7 @@ public class WebSecurityConfig implements Filter {
                             String _password = credentials.substring(p + 1).trim();
                             query.setParameter("username", _username);
                             List<Object[]> rows =query.getResultList();
-                            List<Users> users = new ArrayList<>(rows.size());
+
                             if (rows.size()!=0){
                                 for (Object[] row : rows){
 

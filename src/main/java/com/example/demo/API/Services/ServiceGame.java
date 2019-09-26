@@ -22,6 +22,13 @@ public class ServiceGame {
         return repositoryGame.findById(id);
     }
 
+    public void refresh(Integer id ){
+        List<Game> games = repositoryGame.findGamesByPlayerIdAndAndGameStatus(id ,GameStatus.ACTIVE);
+        for (Game game:games) {
+            game.setGameStatus(GameStatus.LOST);
+        }
+
+    }
     public Game save(Game stock) {
         return repositoryGame.save(stock);
     }

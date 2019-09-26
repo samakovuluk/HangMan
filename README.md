@@ -28,7 +28,7 @@ On below show list of word of game, here also you able to add and delete.
 * Can play game.
 * Can see all own games.
 * Can see more details of games.
-# Technologies Used
+### Technologies Used
 * ##### Spring boot
 * ##### Hibernate
 * ##### Postgres
